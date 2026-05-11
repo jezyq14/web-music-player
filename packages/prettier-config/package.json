@@ -1,0 +1,7 @@
+{
+  "name": "@repo/prettier-config",
+  "version": "0.0.0",
+  "private": true,
+  "main": "index.json",
+  "license": "GPL-3.0-or-later"
+}

@@ -1,0 +1,13 @@
+{
+    "name": "@repo/shared",
+    "main": "./index.ts",
+    "types": "./index.ts",
+    "dependencies": {
+        "drizzle-orm": "^0.45.2",
+        "music-metadata": "^11.12.3"
+    },
+    "devDependencies": {
+        "@repo/prettier-config": "workspace:^"
+    },
+    "license": "GPL-3.0-or-later"
+}
