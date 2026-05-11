@@ -15,7 +15,7 @@ cp .env.example .env
 
 Z opcji wartych wytłumaczenia to:
 
-- `MUSIC_LIBRARY_PATH` to ścieżka do katalogu z muzyką, gdzie struktura powinna przypominać: `[Wykonawca]/[(rok) Album]/[Nr. Tytuł].mp3`.
+- `MUSIC_LIBRARY_PATH` to ścieżka do katalogu z muzyką, gdzie struktura powinna przypominać: `[Wykonawca]/[(rok) Album]/[Nr. Tytuł].mp3`, dodatkowo w każdym folderze albumu powinna znajdować się jego okładka w pliku `cover.jpeg`.
 
 ## Licencja
 
