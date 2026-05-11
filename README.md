@@ -5,6 +5,18 @@
 
 Aplikacja do streamowania muzyki.
 
+## Konfiguracja
+
+Skopiuj plik `.env.example` do `.env` i uzupełnij go:
+
+```bash
+cp .env.example .env
+```
+
+Z opcji wartych wytłumaczenia to:
+
+- `MUSIC_LIBRARY_PATH` to ścieżka do katalogu z muzyką, gdzie struktura powinna przypominać: `[Wykonawca]/[(rok) Album]/[Nr. Tytuł].mp3`.
+
 ## Licencja
 
 Projekt objęty jest licencją [GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.html).
