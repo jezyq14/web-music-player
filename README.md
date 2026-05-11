@@ -3,7 +3,46 @@
 > [!NOTE]
 > Całość jest projektem szkolnym na którego wykonanie mieliśmy 2 tygodnie.
 
-Aplikacja do streamowania muzyki.
+Aplikacja do streamowania muzyki, a w zasadzie to jej monorepo. Korzysta ona z lokalnych plików muzyki, w początkowym zamyśle miała streamować z jakichś konkretnych platform, ale z racji na problemy z ich regulaminami ten pomysł nie wypalił.
+
+## Użyte technologie
+
+### Frontend
+
+- SvelteKit
+- tailwindcss
+- svelte-shadcn
+- Hono RPC
+
+### Backend
+
+- Hono
+- Drizzle ORM (PostgreSQL)
+- Socket.IO
+
+## Uruchamianie
+
+### Development
+
+1. Sklonuj repozytorium:
+
+```bash
+git clone https://github.com/jezyq14/web-music-player
+```
+
+2. Zainstaluj dependencies:
+
+```bash
+pnpm install
+```
+
+3. Skopiuj plik `.env.example` do `.env` i uzupełnij go zgodnie z [tymi instrukcjami](#konfiguracja)
+
+4. Uruchom aplikację:
+
+```bash
+pnpm dev
+```
 
 ## Konfiguracja
 
