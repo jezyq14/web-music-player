@@ -1,11 +1,26 @@
-import { serve } from '@hono/node-server';
 import { Hono } from 'hono';
+import { cors } from 'hono/cors';
+import { logger } from 'hono/logger';
+import { serve } from '@hono/node-server';
+
+import { artistsRouter } from './routes/artists';
+import { albumsRouter } from './routes/albums';
+import { tracksRouter } from './routes/tracks';
 
 const app = new Hono();
 
-app.get('/', (c) => {
-    return c.text('Hello Hono!');
-});
+// Middleware
+app.use('*', logger());
+app.use('*', cors());
+
+// v1 API
+const routes = app
+    .basePath('/v1')
+    .route('/artists', artistsRouter)
+    .route('/albums', albumsRouter)
+    .route('/tracks', tracksRouter);
+
+export type AppType = typeof routes;
 
 serve(
     {
