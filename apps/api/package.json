@@ -8,14 +8,15 @@
     },
     "dependencies": {
         "@hono/node-server": "^1.19.14",
-        "@repo/shared": "workspace:*",
+        "@repo/shared": "workspace:^",
+        "drizzle-orm": "^0.45.2",
         "hono": "^4.12.18"
     },
     "devDependencies": {
         "@repo/prettier-config": "workspace:^",
-        "@types/node": "^20.11.17",
-        "tsx": "^4.7.1",
-        "typescript": "^5.8.3"
+        "@types/node": "^20.19.41",
+        "tsx": "^4.21.0",
+        "typescript": "^5.9.3"
     },
     "license": "GPL-3.0-or-later"
 }

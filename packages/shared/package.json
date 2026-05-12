@@ -1,13 +1,25 @@
 {
     "name": "@repo/shared",
     "main": "./index.ts",
+    "type": "module",
+    "scripts": {
+        "db:push": "drizzle-kit push",
+        "db:generate": "drizzle-kit generate",
+        "db:studio": "drizzle-kit studio"
+    },
     "types": "./index.ts",
     "dependencies": {
+        "dotenv": "^17.4.2",
         "drizzle-orm": "^0.45.2",
-        "music-metadata": "^11.12.3"
+        "music-metadata": "^11.12.3",
+        "p-limit": "^7.3.0",
+        "postgres": "^3.4.9"
     },
     "devDependencies": {
-        "@repo/prettier-config": "workspace:^"
+        "@repo/prettier-config": "workspace:^",
+        "@types/node": "^20.19.41",
+        "@types/pg": "^8.20.0",
+        "drizzle-kit": "^0.31.10"
     },
     "license": "GPL-3.0-or-later"
 }
