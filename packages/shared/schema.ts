@@ -56,6 +56,31 @@ export const tracks = pgTable('tracks', {
         .notNull(),
 });
 
+// User favorites
+export const userFavoriteTracks = pgTable('user_favorite_tracks', {
+    userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+    trackId: uuid('track_id').references(() => tracks.id, { onDelete: 'cascade' }).notNull(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (t) => [
+    primaryKey({ columns: [t.userId, t.trackId] })
+]);
+
+export const userFavoriteAlbums = pgTable('user_favorite_albums', {
+    userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+    albumId: uuid('album_id').references(() => albums.id, { onDelete: 'cascade' }).notNull(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (t) => [
+    primaryKey({ columns: [t.userId, t.albumId] })
+]);
+
+export const userFavoriteArtists = pgTable('user_favorite_artists', {
+    userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+    artistId: uuid('artist_id').references(() => artists.id, { onDelete: 'cascade' }).notNull(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (t) => [
+    primaryKey({ columns: [t.userId, t.artistId] })
+]);
+
 export const lyrics = pgTable('lyrics', {
     id: uuid('id').defaultRandom().primaryKey(),
     trackId: uuid('track_id')
@@ -101,17 +126,44 @@ export const jamRooms = pgTable('jam_rooms', {
     lastPosition: real('last_position').default(0).notNull(),
 });
 
-// --- RELATIONS ---
+// --- UPDATED RELATIONS ---
+
+export const usersRelations = relations(users, ({ many }) => ({
+    playlists: many(playlists),
+    favoriteTracks: many(userFavoriteTracks),
+    favoriteAlbums: many(userFavoriteAlbums),
+    favoriteArtists: many(userFavoriteArtists),
+}));
+
 export const artistsRelations = relations(artists, ({ many }) => ({
     albums: many(albums),
+    favoritedBy: many(userFavoriteArtists),
 }));
 
 export const albumsRelations = relations(albums, ({ one, many }) => ({
     artist: one(artists, { fields: [albums.artistId], references: [artists.id] }),
     tracks: many(tracks),
+    favoritedBy: many(userFavoriteAlbums),
 }));
 
-export const tracksRelations = relations(tracks, ({ one }) => ({
+export const tracksRelations = relations(tracks, ({ one, many }) => ({
     album: one(albums, { fields: [tracks.albumId], references: [albums.id] }),
     lyrics: one(lyrics, { fields: [tracks.id], references: [lyrics.trackId] }),
+    favoritedBy: many(userFavoriteTracks),
+    playlistConnections: many(playlistTracks),
+}));
+
+export const userFavoriteTracksRelations = relations(userFavoriteTracks, ({ one }) => ({
+    user: one(users, { fields: [userFavoriteTracks.userId], references: [users.id] }),
+    track: one(tracks, { fields: [userFavoriteTracks.trackId], references: [tracks.id] }),
+}));
+
+export const userFavoriteAlbumsRelations = relations(userFavoriteAlbums, ({ one }) => ({
+    user: one(users, { fields: [userFavoriteAlbums.userId], references: [users.id] }),
+    album: one(albums, { fields: [userFavoriteAlbums.albumId], references: [albums.id] }),
+}));
+
+export const userFavoriteArtistsRelations = relations(userFavoriteArtists, ({ one }) => ({
+    user: one(users, { fields: [userFavoriteArtists.userId], references: [users.id] }),
+    artist: one(artists, { fields: [userFavoriteArtists.artistId], references: [artists.id] }),
 }));
