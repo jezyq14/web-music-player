@@ -27,7 +27,9 @@
         "vite": "^8.0.12"
     },
     "dependencies": {
-        "@repo/shared": "workspace:*"
+        "@repo/api": "workspace:^",
+        "@repo/shared": "workspace:*",
+        "hono": "^4.12.18"
     },
     "license": "GPL-3.0-or-later"
 }
