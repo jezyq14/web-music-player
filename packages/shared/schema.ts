@@ -54,6 +54,7 @@ export const tracks = pgTable('tracks', {
     albumId: uuid('album_id')
         .references(() => albums.id, { onDelete: 'cascade' })
         .notNull(),
+    replayGain: real('replay_gain'),
 });
 
 // User favorites
