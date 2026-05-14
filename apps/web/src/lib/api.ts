@@ -1,8 +1,8 @@
 import { hc } from 'hono/client';
 import type { AppType } from '@repo/api';
-import { API_URL } from '$env/static/private';
+import { PUBLIC_API_URL } from '$env/static/public';
 
-const baseUrl = API_URL || 'http://localhost:3000';
+const baseUrl = PUBLIC_API_URL || 'http://localhost:3000';
 
 export const api = hc<AppType>(baseUrl);
 

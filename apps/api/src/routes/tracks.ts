@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
-import { db, tracks } from '@repo/shared';
-import { eq } from 'drizzle-orm';
+import { albums, artists, db, tracks } from '@repo/shared';
+import { eq, ilike, or } from 'drizzle-orm';
 import { stream } from 'hono/streaming';
 import { statSync, createReadStream } from 'fs';
 
@@ -36,8 +36,15 @@ export const tracksRouter = new Hono()
                     fileStream.destroy();
                 });
 
-                for await (const chunk of fileStream) {
-                    await st.write(chunk);
+                try {
+                    for await (const chunk of fileStream) {
+                        await st.write(chunk);
+                    }
+                } catch (e: any) {
+                    if (e.code === 'ERR_STREAM_PREMATURE_CLOSE' || e.code === 'ECONNRESET') {
+                        return;
+                    }
+                    console.error('Błąd streamingu:', e);
                 }
             });
         } else {
@@ -54,4 +61,36 @@ export const tracksRouter = new Hono()
                 }
             });
         }
-    });
+    })
+    // GET /v1/tracks/search?q=...
+    .get('/search', async (c) => {
+        const q = c.req.query('q') || '';
+
+        const results = await db.select({
+            id: tracks.id,
+            title: tracks.title,
+            duration: tracks.duration,
+            artistName: artists.name,
+            albumTitle: albums.title,
+            coverUrl: albums.coverUrl,
+            replayGain: tracks.replayGain,
+        })
+            .from(tracks)
+            .leftJoin(albums, eq(tracks.albumId, albums.id))
+            .leftJoin(artists, eq(albums.artistId, artists.id))
+            .where(
+                or(
+                    ilike(tracks.title, `%${q}%`),
+                    ilike(artists.name, `%${q}%`)
+                )
+            )
+            .limit(20);
+
+        return c.json(results);
+    })
+    // GET /v1/tracks/:id
+    .get('/:id', async (c) => {
+        const id = c.req.param('id');
+        const [track] = await db.select().from(tracks).where(eq(tracks.id, id));
+        return c.json(track);
+    })
