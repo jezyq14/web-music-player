@@ -60,6 +60,9 @@ importers:
       hono:
         specifier: ^4.12.18
         version: 4.12.18
+      mode-watcher:
+        specifier: ^1.1.0
+        version: 1.1.0(svelte@5.55.5(@typescript-eslint/types@8.50.0))
     devDependencies:
       '@fontsource-variable/inter':
         specifier: ^5.2.8
@@ -1362,6 +1365,9 @@ packages:
   ieee754@1.2.1:
     resolution: {integrity: sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==}
 
+  inline-style-parser@0.2.7:
+    resolution: {integrity: sha512-Nb2ctOyNR8DqQoR0OwRG95uNWIC0C1lCgf5Naz5H6Ji72KZ8OcFZLz2P5sNgwlyoJ8Yif11oMuYs5pBQa86csA==}
+
   is-core-module@2.16.2:
     resolution: {integrity: sha512-evOr8xfXKxE6qSR0hSXL2r3sd7ALj8+7jQEUvPYcm5sgZFdJ+AYzT6yNmJenvIYQBgIGwfwz08sL8zoL7yq2BA==}
     engines: {node: '>= 0.4'}
@@ -1466,6 +1472,11 @@ packages:
   mini-svg-data-uri@1.4.4:
     resolution: {integrity: sha512-r9deDe9p5FJUPZAk3A59wGH7Ii9YrjjWw0jmw/liSbHl2CHiyXj6FcDXDu2K3TjVAXqiJdaw3xxwlZZr9E6nHg==}
     hasBin: true
+
+  mode-watcher@1.1.0:
+    resolution: {integrity: sha512-mUT9RRGPDYenk59qJauN1rhsIMKBmWA3xMF+uRwE8MW/tjhaDSCCARqkSuDTq8vr4/2KcAxIGVjACxTjdk5C3g==}
+    peerDependencies:
+      svelte: ^5.27.0
 
   mri@1.2.0:
     resolution: {integrity: sha512-tzzskb3bG8LvYGFF/mDTpq3jpI6Q9wc3LEmBaghu+DdCssd1FakN7Bc0hVNmEyGq1bq3RgfkCb3cmQLpNPOroA==}
@@ -1634,6 +1645,16 @@ packages:
     engines: {node: '>=18.0.0', npm: '>=8.0.0'}
     hasBin: true
 
+  runed@0.23.4:
+    resolution: {integrity: sha512-9q8oUiBYeXIDLWNK5DfCWlkL0EW3oGbk845VdKlPeia28l751VpfesaB/+7pI6rnbx1I6rqoZ2fZxptOJLxILA==}
+    peerDependencies:
+      svelte: ^5.7.0
+
+  runed@0.25.0:
+    resolution: {integrity: sha512-7+ma4AG9FT2sWQEA0Egf6mb7PBT2vHyuHail1ie8ropfSjvZGtEAx8YTmUjv/APCsdRRxEVvArNjALk9zFSOrg==}
+    peerDependencies:
+      svelte: ^5.7.0
+
   sade@1.8.1:
     resolution: {integrity: sha512-xal3CZX1Xlo/k4ApwCFrHVACi9fBqJ7V+mwhBsuf/1IOKbBy098Fex+Wa/5QMubw09pSZ/u8EY8PWgevJsXp1A==}
     engines: {node: '>=6'}
@@ -1666,6 +1687,9 @@ packages:
     resolution: {integrity: sha512-ki4hZQfh5rX0QDLLkOCj+h+CVNkqmp/CMf8v8kZpkNVK6jGQooMytqzLZYUVYIZcFZ6yDB70EfD8POcFXiF5oA==}
     engines: {node: '>=18'}
 
+  style-to-object@1.0.14:
+    resolution: {integrity: sha512-LIN7rULI0jBscWQYaSswptyderlarFkjQ+t79nzty8tcIAceVomEVlLzH5VP4Cmsv6MtKhs7qaAiwlcp+Mgaxw==}
+
   supports-preserve-symlinks-flag@1.0.0:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
@@ -1677,6 +1701,12 @@ packages:
     peerDependencies:
       svelte: ^4.0.0 || ^5.0.0-next.0
       typescript: '>=5.0.0'
+
+  svelte-toolbelt@0.7.1:
+    resolution: {integrity: sha512-HcBOcR17Vx9bjaOceUvxkY3nGmbBmCBBbuWLLEWO6jtmWH8f/QoWmbyUfQZrpDINH39en1b8mptfPQT9VKQ1xQ==}
+    engines: {node: '>=18', pnpm: '>=8.7.0'}
+    peerDependencies:
+      svelte: ^5.0.0
 
   svelte@5.55.5:
     resolution: {integrity: sha512-2uCs/LZ9us+AktdzYJM8OcxQ8qnPS1kpaO7syGT/MgO+6Qr1Ybl+TqPq+97u7PHqmmMlye5ZkoyXONy5mjjAbw==}
@@ -2631,6 +2661,8 @@ snapshots:
 
   ieee754@1.2.1: {}
 
+  inline-style-parser@0.2.7: {}
+
   is-core-module@2.16.2:
     dependencies:
       hasown: 2.0.3
@@ -2707,6 +2739,12 @@ snapshots:
   media-typer@1.1.0: {}
 
   mini-svg-data-uri@1.4.4: {}
+
+  mode-watcher@1.1.0(svelte@5.55.5(@typescript-eslint/types@8.50.0)):
+    dependencies:
+      runed: 0.25.0(svelte@5.55.5(@typescript-eslint/types@8.50.0))
+      svelte: 5.55.5(@typescript-eslint/types@8.50.0)
+      svelte-toolbelt: 0.7.1(svelte@5.55.5(@typescript-eslint/types@8.50.0))
 
   mri@1.2.0: {}
 
@@ -2856,6 +2894,16 @@ snapshots:
       '@rollup/rollup-win32-x64-msvc': 4.60.3
       fsevents: 2.3.3
 
+  runed@0.23.4(svelte@5.55.5(@typescript-eslint/types@8.50.0)):
+    dependencies:
+      esm-env: 1.2.2
+      svelte: 5.55.5(@typescript-eslint/types@8.50.0)
+
+  runed@0.25.0(svelte@5.55.5(@typescript-eslint/types@8.50.0)):
+    dependencies:
+      esm-env: 1.2.2
+      svelte: 5.55.5(@typescript-eslint/types@8.50.0)
+
   sade@1.8.1:
     dependencies:
       mri: 1.2.0
@@ -2889,6 +2937,10 @@ snapshots:
     dependencies:
       '@tokenizer/token': 0.3.0
 
+  style-to-object@1.0.14:
+    dependencies:
+      inline-style-parser: 0.2.7
+
   supports-preserve-symlinks-flag@1.0.0: {}
 
   svelte-check@4.4.8(picomatch@4.0.4)(svelte@5.55.5(@typescript-eslint/types@8.50.0))(typescript@6.0.3):
@@ -2902,6 +2954,13 @@ snapshots:
       typescript: 6.0.3
     transitivePeerDependencies:
       - picomatch
+
+  svelte-toolbelt@0.7.1(svelte@5.55.5(@typescript-eslint/types@8.50.0)):
+    dependencies:
+      clsx: 2.1.1
+      runed: 0.23.4(svelte@5.55.5(@typescript-eslint/types@8.50.0))
+      style-to-object: 1.0.14
+      svelte: 5.55.5(@typescript-eslint/types@8.50.0)
 
   svelte@5.55.5(@typescript-eslint/types@8.50.0):
     dependencies:
