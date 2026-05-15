@@ -4,6 +4,12 @@
 
     let audioTag: HTMLAudioElement;
 
+    let pageTitle = $derived(
+        player.currentTrack && player.isPlaying
+            ? `${player.currentTrack.title} | Michael's Music`
+            : "Michael's Music",
+    );
+
     async function safelyPlay() {
         if (!audioTag || !player.isPlaying || !player.currentTrack) return;
 
@@ -77,6 +83,10 @@
         }
     }
 </script>
+
+<svelte:head>
+    <title>{pageTitle}</title>
+</svelte:head>
 
 <audio
     bind:this={audioTag}
