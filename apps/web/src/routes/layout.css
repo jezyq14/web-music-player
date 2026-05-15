@@ -130,3 +130,18 @@
 		@apply font-sans;
 	}
 }
+
+::view-transition-old(root),
+::view-transition-new(root) {
+	animation-duration: 0.2s;
+}
+
+@keyframes progress-bar {
+    0% { transform: translateX(-100%); width: 30%; }
+    50% { width: 60%; }
+    100% { transform: translateX(400%); width: 100%; }
+}
+
+.animate-progress-bar {
+    animation: progress-bar 2s infinite linear;
+}
