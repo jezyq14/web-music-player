@@ -1,4 +1,4 @@
-# Web Music Player
+# Web Music Player (Michael's Music)
 
 > [!NOTE]
 > Całość jest projektem szkolnym na którego wykonanie mieliśmy 2 tygodnie.
