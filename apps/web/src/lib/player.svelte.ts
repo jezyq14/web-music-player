@@ -34,13 +34,47 @@ class PlayerStore {
     canPlayPrevious = $derived(this.queue.length > 0 && (this.currentIndex > 0 || this.isRepeat === 'all' || this.currentTime > 3));
     canPlayNext = $derived(this.queue.length > 0 && (this.currentIndex < this.queue.length - 1 || this.isRepeat === 'all'));
 
+    constructor() {
+        if (typeof window !== 'undefined') {
+            const saved = localStorage.getItem('player_state');
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    this.currentTrack = data.currentTrack;
+                    this.queue = data.queue;
+                    this.currentIndex = data.currentIndex;
+                    this.volume = data.volume;
+                    this.currentTime = data.currentTime;
+                    this.isRepeat = data.isRepeat;
+                    this.isShuffled = data.isShuffled;
+                    this.lastSeekTime = data.currentTime;
+                } catch (e) {
+                    console.error("Failed to load player state", e);
+                }
+            }
+
+            $effect.root(() => {
+                $effect(() => {
+                    const stateToSave = {
+                        currentTrack: this.currentTrack,
+                        queue: this.queue,
+                        currentIndex: this.currentIndex,
+                        volume: this.volume,
+                        currentTime: this.currentTime,
+                        isRepeat: this.isRepeat,
+                        isShuffled: this.isShuffled
+                    };
+                    localStorage.setItem('player_state', JSON.stringify(stateToSave));
+                });
+            });
+        }
+    }
+
     play(track: Track) {
-        if (this.currentTrack?.id === track.id) {
+        if (this.currentTrack && this.currentTrack.id === track.id) {
             this.togglePlay();
             return;
         }
-        this.currentTrack = track;
-        this.isPlaying = true;
 
         const idx = this.queue.findIndex(t => t.id === track.id);
         if (idx === -1) {
@@ -49,6 +83,10 @@ class PlayerStore {
         } else {
             this.currentIndex = idx;
         }
+
+        this.currentTrack = track;
+        this.currentTime = 0;
+        this.isPlaying = true;
     }
 
     togglePlay() {

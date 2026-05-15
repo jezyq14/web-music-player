@@ -4,7 +4,47 @@
 
     let audioTag: HTMLAudioElement;
 
-    // Time sync
+    async function safelyPlay() {
+        if (!audioTag || !player.isPlaying || !player.currentTrack) return;
+
+        try {
+            if (audioTag.paused) {
+                await audioTag.play();
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    // Source sync
+    $effect(() => {
+        if (player.currentTrack?.id && audioTag) {
+            const trackUrl = `http://localhost:3000/v1/tracks/${player.currentTrack.id}/stream`;
+
+            if (audioTag.src !== trackUrl) {
+                audioTag.pause();
+                audioTag.src = trackUrl;
+                audioTag.load();
+
+                if (player.isPlaying) {
+                    safelyPlay();
+                }
+            }
+        }
+    });
+
+    // Play/Pause sync
+    $effect(() => {
+        if (!audioTag) return;
+
+        if (player.isPlaying) {
+            safelyPlay();
+        } else {
+            audioTag.pause();
+        }
+    });
+
+    // Seek sync
     $effect(() => {
         if (player.lastSeekTime !== null && audioTag) {
             audioTag.currentTime = player.lastSeekTime;
@@ -14,29 +54,14 @@
         }
     });
 
-    // Play/Pause sync
-    $effect(() => {
+    function handleCanPlay() {
         if (player.isPlaying) {
-            audioTag?.play().catch(() => (player.isPlaying = false));
-        } else {
-            audioTag?.pause();
+            safelyPlay();
         }
-    });
-
-    // Source sync
-    $effect(() => {
-        if (player.currentTrack?.id) {
-            const trackUrl = `http://localhost:3000/v1/tracks/${player.currentTrack.id}/stream`;
-
-            if (audioTag.src !== trackUrl) {
-                audioTag.src = trackUrl;
-                if (player.isPlaying) audioTag.play();
-            }
-        }
-    });
+    }
 
     function handleTimeUpdate() {
-        if (player.lastSeekTime === null) {
+        if (player.lastSeekTime === null && audioTag) {
             player.currentTime = audioTag.currentTime;
             player.duration = audioTag.duration;
         }
@@ -44,11 +69,11 @@
 
     function handleEnded() {
         const previousId = player.currentTrack?.id;
-
         player.next();
 
         if (player.currentTrack?.id === previousId && player.isPlaying) {
-            audioTag.play();
+            audioTag.currentTime = 0;
+            safelyPlay();
         }
     }
 </script>
@@ -56,6 +81,8 @@
 <audio
     bind:this={audioTag}
     bind:volume={player.volume}
+    oncanplay={handleCanPlay}
+    onloadedmetadata={handleCanPlay}
     ontimeupdate={handleTimeUpdate}
     onended={handleEnded}
     preload="auto"

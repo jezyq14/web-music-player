@@ -74,6 +74,8 @@ export const tracksRouter = new Hono()
             albumTitle: albums.title,
             coverUrl: albums.coverUrl,
             replayGain: tracks.replayGain,
+            albumId: albums.id,
+            artistId: artists.id,
         })
             .from(tracks)
             .leftJoin(albums, eq(tracks.albumId, albums.id))
