@@ -34,11 +34,11 @@
     function handleVolumeScroll(e: WheelEvent) {
         e.preventDefault();
 
-        const step = 0.1;
+        const step = 0.05;
         const change = e.deltaY < 0 ? step : -step;
 
         const newVolume = player.volume + change;
-        player.volume = Math.max(0, Math.min(1, Math.round(newVolume * 10) / 10));
+        player.volume = Math.max(0, Math.min(1, Math.round(newVolume * 100) / 100));
     }
 
     function formatTime(seconds: number) {
@@ -47,11 +47,24 @@
         const secs = Math.floor(seconds % 60);
         return `${mins}:${secs.toString().padStart(2, '0')}`;
     }
+
+    function handleBarClick(e: MouseEvent) {
+        const target = e.target as HTMLElement;
+
+        if (target.closest('button, a, .no-navigate')) {
+            return;
+        }
+
+        goto('/player');
+    }
 </script>
 
-<button
+<div
     class="flex h-full w-full items-center justify-between md:grid md:grid-cols-3"
-    onclick={() => goto('/player')}
+    role="button"
+    tabindex="-1"
+    onkeydown={() => null}
+    onclick={handleBarClick}
 >
     <div class="flex min-w-0 flex-1 items-center gap-3 pr-4 text-left md:pr-0">
         {#if player.currentTrack}
@@ -64,14 +77,12 @@
             </a>
             <div class="min-w-0 overflow-hidden">
                 <a href={albumUrl} class="block">
-                    <div
-                        class="truncate text-sm leading-tight font-medium hover:underline md:text-base"
-                    >
+                    <div class="truncate font-medium hover:underline">
                         {player.currentTrack.title}
                     </div>
                 </a>
                 <a href={artistUrl} class="block">
-                    <div class="truncate text-xs text-zinc-400 hover:underline">
+                    <div class="text-foreground/70 truncate text-xs hover:underline">
                         {player.currentTrack.artistName}
                     </div>
                 </a>
@@ -165,7 +176,7 @@
                     isDragging = false;
                     player.seek(v);
                 }}
-                class="flex-1 cursor-pointer"
+                class="no-navigate flex-1 cursor-pointer"
             />
 
             <span class="w-8">{formatTime(player.duration || 0)}</span>
@@ -194,7 +205,7 @@
             max={1}
             step={0.01}
             onValueChange={(v) => (player.volume = v)}
-            class="w-24 cursor-pointer"
+            class="no-navigate w-24 cursor-pointer"
         />
     </div>
-</button>
+</div>

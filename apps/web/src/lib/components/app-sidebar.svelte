@@ -5,6 +5,7 @@
     import HouseIcon from '@lucide/svelte/icons/house';
     import SearchIcon from '@lucide/svelte/icons/search';
     import BookSearchIcon from '@lucide/svelte/icons/book-search';
+    import Disc3Icon from '@lucide/svelte/icons/disc-3';
 
     import * as Sidebar from '$lib/components/ui/sidebar/index.js';
     import Logo from '$lib/components/branding/logo.svelte';
@@ -21,6 +22,11 @@
                 label: 'Strona główna',
                 href: '/',
                 icon: HouseIcon,
+            },
+            {
+                label: 'Odtwarzacz',
+                href: '/player',
+                icon: Disc3Icon,
             },
             {
                 label: 'Szukaj',
