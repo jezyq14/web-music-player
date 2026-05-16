@@ -13,6 +13,7 @@
     import Shuffle from '@lucide/svelte/icons/shuffle';
     import Repeat from '@lucide/svelte/icons/repeat';
     import Repeat1 from '@lucide/svelte/icons/repeat-1';
+    import { goto } from '$app/navigation';
 
     let albumUrl = $derived(
         player.currentTrack?.albumId ? `/album/${player.currentTrack.albumId}` : '#',
@@ -22,8 +23,13 @@
     );
 
     let buttonDefaultClass = 'text-current';
-    let buttonActiveClass = 'text-chart-1 dark:text-chart-2';
-    let buttonDotClass = 'bg-chart-1 dark:bg-chart-2 absolute bottom-0.5 h-1 w-1 rounded-full';
+    let buttonActiveClass = 'text-primary dark:text-chart-2';
+    let buttonDotClass = 'bg-primary dark:bg-chart-2 absolute bottom-0.5 h-1 w-1 rounded-full';
+
+    let isDragging = $state(false);
+    let dragTime = $state(0);
+
+    let displayTime = $derived(isDragging ? dragTime : player.currentTime);
 
     function handleVolumeScroll(e: WheelEvent) {
         e.preventDefault();
@@ -43,19 +49,24 @@
     }
 </script>
 
-<div class="flex h-full items-center justify-between md:grid md:grid-cols-3">
-    <div class="flex min-w-0 flex-1 items-center gap-3 pr-4 md:pr-0">
+<button
+    class="flex h-full w-full items-center justify-between md:grid md:grid-cols-3"
+    onclick={() => goto('/player')}
+>
+    <div class="flex min-w-0 flex-1 items-center gap-3 pr-4 text-left md:pr-0">
         {#if player.currentTrack}
             <a href={albumUrl} class="block shrink-0">
                 <img
                     src={player.currentTrack.coverUrl}
-                    class="aspect-square h-10 rounded object-cover shadow-lg md:h-14"
+                    class="aspect-square h-10 rounded object-cover shadow-lg hover:cursor-pointer md:h-14"
                     alt="album cover"
                 />
             </a>
             <div class="min-w-0 overflow-hidden">
                 <a href={albumUrl} class="block">
-                    <div class="truncate text-sm leading-tight font-medium md:text-base">
+                    <div
+                        class="truncate text-sm leading-tight font-medium hover:underline md:text-base"
+                    >
                         {player.currentTrack.title}
                     </div>
                 </a>
@@ -79,9 +90,7 @@
             >
                 <div class="flex flex-col items-center">
                     <Shuffle class={player.isShuffled ? buttonActiveClass : buttonDefaultClass} />
-                    {#if player.isShuffled}
-                        <div class={buttonDotClass}></div>
-                    {/if}
+                    {#if player.isShuffled}<div class={buttonDotClass}></div>{/if}
                 </div>
             </Button>
 
@@ -133,23 +142,29 @@
                     {:else}
                         <Repeat class={buttonDefaultClass} />
                     {/if}
-                    {#if player.isRepeat !== 'none'}
-                        <div class={buttonDotClass}></div>
-                    {/if}
+                    {#if player.isRepeat !== 'none'}<div class={buttonDotClass}></div>{/if}
                 </div>
             </Button>
         </div>
 
         <div class="hidden w-full max-w-md items-center gap-3 text-[10px] text-zinc-500 md:flex">
-            <span class="w-8 text-right">{formatTime(player.currentTime)}</span>
+            <span class="w-8 text-right">{formatTime(displayTime)}</span>
 
             <Slider
                 type="single"
-                value={player.currentTime}
-                max={player.duration || 0}
+                value={displayTime}
+                max={Math.max(player.duration || 0, player.currentTime || 0, 1)}
                 step={1}
-                onValueChange={(v) => (player.currentTime = v)}
-                onValueCommit={(v) => player.seek(v)}
+                onValueChange={(v) => {
+                    if (!isDragging && v === Math.round(player.currentTime || 0)) return;
+
+                    isDragging = true;
+                    dragTime = v;
+                }}
+                onValueCommit={(v) => {
+                    isDragging = false;
+                    player.seek(v);
+                }}
                 class="flex-1 cursor-pointer"
             />
 
@@ -182,4 +197,4 @@
             class="w-24 cursor-pointer"
         />
     </div>
-</div>
+</button>
