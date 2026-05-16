@@ -36,7 +36,9 @@
             </div>
         </header>
 
-        <div class="h-[calc(100dvh-54px-88px)] overflow-auto px-6 py-4">
+        <div
+            class="h-[calc(100dvh-54px-64px)] overflow-auto px-6 py-4 md:h-[calc(100dvh-54px-88px)]"
+        >
             {@render children?.()}
         </div>
     </main>
