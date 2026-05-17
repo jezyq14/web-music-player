@@ -29,11 +29,6 @@
                 icon: Disc3Icon,
             },
             {
-                label: 'Szukaj',
-                href: '/search',
-                icon: SearchIcon,
-            },
-            {
                 label: 'Odkrywaj',
                 href: '/discover',
                 icon: BookSearchIcon,

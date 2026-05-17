@@ -169,10 +169,12 @@
     }
 </script>
 
-<div class="flex h-full w-full flex-col gap-10 pb-28 lg:flex-row lg:gap-16 lg:pb-6 xl:gap-32">
+<div
+    class="flex h-full w-full flex-col gap-10 pb-28 lg:flex-row lg:gap-16 lg:p-10 xl:gap-32 2xl:px-16"
+>
     <div class="flex flex-1 flex-col items-center justify-center lg:px-4">
         {#if player.currentTrack}
-            <div class="flex w-full max-w-[500px] flex-col gap-6 lg:max-w-[600px] lg:gap-8">
+            <div class="flex w-full max-w-1/4 flex-col gap-6 lg:max-w-[600px] lg:gap-8">
                 <div
                     class="group relative aspect-square w-full overflow-hidden rounded-2xl shadow-2xl transition-transform duration-500 lg:hover:scale-[1.02]"
                 >
@@ -314,9 +316,7 @@
         {/if}
     </div>
 
-    <div
-        class="lg:w-[40%]/500px] flex min-h-[500px] w-full flex-1 flex-col lg:h-full lg:flex-none xl:w-[500px] 2xl:w-[600px]"
-    >
+    <div class="flex min-h-[500px] w-full flex-1 flex-col lg:h-full lg:w-1/3 lg:flex-none">
         <Tabs value="queue" class="flex h-full flex-col">
             <TabsList class="grid w-full grid-cols-2">
                 <TabsTrigger value="queue">Kolejka</TabsTrigger>
