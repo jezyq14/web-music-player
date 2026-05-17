@@ -48,6 +48,7 @@ class PlayerStore {
                     this.isRepeat = data.isRepeat;
                     this.isShuffled = data.isShuffled;
                     this.lastSeekTime = data.currentTime;
+                    this.queueSnapshot = data.queueSnapshot;
                 } catch (e) {
                     console.error("Failed to load player state", e);
                 }
@@ -62,7 +63,8 @@ class PlayerStore {
                         volume: this.volume,
                         currentTime: this.currentTime,
                         isRepeat: this.isRepeat,
-                        isShuffled: this.isShuffled
+                        isShuffled: this.isShuffled,
+                        queueSnapshot: this.queueSnapshot
                     };
                     localStorage.setItem('player_state', JSON.stringify(stateToSave));
                 });
@@ -210,7 +212,11 @@ class PlayerStore {
     }
 
     unshuffle() {
-        if (this.queueSnapshot.length === 0) return;
+        if (this.queueSnapshot.length === 0) {
+            this.isShuffled = false;
+            this.queueSnapshot = [];
+            return;
+        };
 
         const currentId = this.currentTrack?.id;
 
