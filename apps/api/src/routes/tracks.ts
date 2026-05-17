@@ -1,8 +1,9 @@
 import { Hono } from 'hono';
-import { albums, artists, db, tracks } from '@repo/shared';
-import { eq, ilike, or } from 'drizzle-orm';
+import { albums, artists, db, tracks, playHistory } from '@repo/shared';
+import { eq, ilike, or, sql } from 'drizzle-orm';
 import { stream } from 'hono/streaming';
-import { statSync, createReadStream } from 'fs';
+import { statSync, createReadStream, existsSync, readFileSync } from 'fs';
+import path from 'path';
 
 export const tracksRouter = new Hono()
     .get('/:id/stream', async (c) => {
@@ -15,6 +16,19 @@ export const tracksRouter = new Hono()
         const stats = statSync(filePath);
         const fileSize = stats.size;
         const range = c.req.header('range');
+
+        const isInitialPlay = !range || range.startsWith('bytes=0-');
+
+        if (isInitialPlay) {
+            Promise.all([
+                db.insert(playHistory).values({ trackId: id }),
+                db.update(tracks)
+                    .set({ playCount: sql`${tracks.playCount} + 1` })
+                    .where(eq(tracks.id, id))
+            ]).catch((err) => {
+                console.error(`Failed to record play stats for track ${id}:`, err);
+            });
+        }
 
         c.header('Accept-Ranges', 'bytes');
         c.header('Content-Type', 'audio/mpeg');
@@ -44,7 +58,7 @@ export const tracksRouter = new Hono()
                     if (e.code === 'ERR_STREAM_PREMATURE_CLOSE' || e.code === 'ECONNRESET') {
                         return;
                     }
-                    console.error('Błąd streamingu:', e);
+                    console.error('Streaming error:', e);
                 }
             });
         } else {
@@ -62,37 +76,34 @@ export const tracksRouter = new Hono()
             });
         }
     })
-    // GET /v1/tracks/search?q=...
-    .get('/search', async (c) => {
-        const q = c.req.query('q') || '';
-
-        const results = await db.select({
-            id: tracks.id,
-            title: tracks.title,
-            duration: tracks.duration,
-            artistName: artists.name,
-            albumTitle: albums.title,
-            coverUrl: albums.coverUrl,
-            replayGain: tracks.replayGain,
-            albumId: albums.id,
-            artistId: artists.id,
-        })
-            .from(tracks)
-            .leftJoin(albums, eq(tracks.albumId, albums.id))
-            .leftJoin(artists, eq(albums.artistId, artists.id))
-            .where(
-                or(
-                    ilike(tracks.title, `%${q}%`),
-                    ilike(artists.name, `%${q}%`)
-                )
-            )
-            .limit(20);
-
-        return c.json(results);
-    })
     // GET /v1/tracks/:id
     .get('/:id', async (c) => {
         const id = c.req.param('id');
         const [track] = await db.select().from(tracks).where(eq(tracks.id, id));
         return c.json(track);
+    })
+    .get('/:id/cover', async (c) => {
+        const id = c.req.param('id');
+        const [track] = await db.select({
+            coverUrl: albums.coverUrl,
+            albumId: albums.id
+        })
+            .from(tracks)
+            .leftJoin(albums, eq(tracks.albumId, albums.id))
+            .where(eq(tracks.id, id));
+
+        if (!track || !track.coverUrl) return c.json({ error: 'Cover not found' }, 404);
+
+        if (track.coverUrl.startsWith('http')) {
+            return c.redirect(track.coverUrl);
+        }
+
+        const absolutePath = path.join(process.env.MUSIC_LIBRARY_PATH || '', track.coverUrl);
+
+        if (existsSync(absolutePath)) {
+            c.header('Content-Type', 'image/jpeg');
+            return c.body(readFileSync(absolutePath));
+        }
+
+        return c.json({ error: 'File not found' }, 404);
     })

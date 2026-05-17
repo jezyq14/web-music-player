@@ -6,6 +6,7 @@ import { serve } from '@hono/node-server';
 import { artistsRouter } from './routes/artists';
 import { albumsRouter } from './routes/albums';
 import { tracksRouter } from './routes/tracks';
+import { searchRouter } from './routes/search';
 
 const app = new Hono();
 
@@ -18,7 +19,8 @@ const routes = app
     .basePath('/v1')
     .route('/artists', artistsRouter)
     .route('/albums', albumsRouter)
-    .route('/tracks', tracksRouter);
+    .route('/tracks', tracksRouter)
+    .route('/search', searchRouter);
 
 export type AppType = typeof routes;
 
