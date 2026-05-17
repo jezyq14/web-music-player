@@ -55,6 +55,7 @@ export const tracks = pgTable('tracks', {
         .references(() => albums.id, { onDelete: 'cascade' })
         .notNull(),
     replayGain: real('replay_gain'),
+    playCount: integer('play_count').default(0).notNull(),
 });
 
 // User favorites
@@ -127,6 +128,16 @@ export const jamRooms = pgTable('jam_rooms', {
     lastPosition: real('last_position').default(0).notNull(),
 });
 
+// Statistics
+export const playHistory = pgTable('play_history', {
+    id: uuid('id').defaultRandom().primaryKey(),
+    trackId: uuid('track_id').references(() => tracks.id, { onDelete: 'cascade' }).notNull(),
+    // Nullable userId to allow anonymous plays until auth is added
+    userId: uuid('user_id').references(() => users.id, { onDelete: 'set null' }),
+    playedAt: timestamp('played_at').defaultNow().notNull(),
+});
+
+
 // --- UPDATED RELATIONS ---
 
 export const usersRelations = relations(users, ({ many }) => ({
@@ -134,6 +145,7 @@ export const usersRelations = relations(users, ({ many }) => ({
     favoriteTracks: many(userFavoriteTracks),
     favoriteAlbums: many(userFavoriteAlbums),
     favoriteArtists: many(userFavoriteArtists),
+    playHistory: many(playHistory),
 }));
 
 export const artistsRelations = relations(artists, ({ many }) => ({
@@ -152,6 +164,7 @@ export const tracksRelations = relations(tracks, ({ one, many }) => ({
     lyrics: one(lyrics, { fields: [tracks.id], references: [lyrics.trackId] }),
     favoritedBy: many(userFavoriteTracks),
     playlistConnections: many(playlistTracks),
+    playHistory: many(playHistory),
 }));
 
 export const userFavoriteTracksRelations = relations(userFavoriteTracks, ({ one }) => ({
@@ -167,4 +180,9 @@ export const userFavoriteAlbumsRelations = relations(userFavoriteAlbums, ({ one 
 export const userFavoriteArtistsRelations = relations(userFavoriteArtists, ({ one }) => ({
     user: one(users, { fields: [userFavoriteArtists.userId], references: [users.id] }),
     artist: one(artists, { fields: [userFavoriteArtists.artistId], references: [artists.id] }),
+}));
+
+export const playHistoryRelations = relations(playHistory, ({ one }) => ({
+    track: one(tracks, { fields: [playHistory.trackId], references: [tracks.id] }),
+    user: one(users, { fields: [playHistory.userId], references: [users.id] }),
 }));
