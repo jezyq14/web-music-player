@@ -8,6 +8,7 @@ declare global {
         // interface Error {}
         interface Locals {
             api: ReturnType<typeof hc<AppType>>;
+            user: { id: string; username: string } | null;
         }
         // interface PageData {}
         // interface Platform {}
