@@ -2,13 +2,16 @@
     import { type ComponentProps } from 'svelte';
     import { page } from '$app/state';
 
+    import { favorites } from '$lib/favorites.svelte';
+
+    import HeartIcon from '@lucide/svelte/icons/heart';
     import HouseIcon from '@lucide/svelte/icons/house';
-    import SearchIcon from '@lucide/svelte/icons/search';
     import BookSearchIcon from '@lucide/svelte/icons/book-search';
     import Disc3Icon from '@lucide/svelte/icons/disc-3';
 
     import * as Sidebar from '$lib/components/ui/sidebar/index.js';
     import Logo from '$lib/components/branding/logo.svelte';
+    import NavUser from './nav-user.svelte';
 
     let {
         ref = $bindable(null),
@@ -65,6 +68,7 @@
 
     <Sidebar.Content>
         <Sidebar.Group>
+            <Sidebar.GroupLabel>Aplikacja</Sidebar.GroupLabel>
             <Sidebar.Menu>
                 {#each data.navItems as item}
                     <Sidebar.MenuItem>
@@ -84,7 +88,68 @@
                 {/each}
             </Sidebar.Menu>
         </Sidebar.Group>
+
+        <Sidebar.Group>
+            <Sidebar.GroupLabel>Biblioteka</Sidebar.GroupLabel>
+            <Sidebar.Menu>
+                <Sidebar.MenuItem>
+                    <Sidebar.MenuButton
+                        isActive={page.url.pathname === '/playlist/favorites'}
+                        tooltipContent="Polubione utwory"
+                    >
+                        {#snippet child({ props })}
+                            <a href="/playlist/favorites" {...props}>
+                                <div
+                                    class="flex size-6 items-center justify-center rounded-sm bg-linear-to-br from-indigo-500 to-purple-600 text-white shadow-sm"
+                                >
+                                    <HeartIcon class="size-3 fill-current" />
+                                </div>
+                                <span>Polubione utwory</span>
+                            </a>
+                        {/snippet}
+                    </Sidebar.MenuButton>
+                </Sidebar.MenuItem>
+
+                {#each favorites.albums as album}
+                    <Sidebar.MenuItem>
+                        <Sidebar.MenuButton isActive={page.url.pathname === `/album/${album.id}`}>
+                            {#snippet child({ props })}
+                                <a href={`/album/${album.id}`} {...props}>
+                                    <img
+                                        src={album.coverUrl}
+                                        class="size-6 rounded-sm object-cover shadow-sm"
+                                        alt=""
+                                    />
+                                    <span class="truncate">{album.title}</span>
+                                </a>
+                            {/snippet}
+                        </Sidebar.MenuButton>
+                    </Sidebar.MenuItem>
+                {/each}
+
+                {#each favorites.artists as artist}
+                    <Sidebar.MenuItem>
+                        <Sidebar.MenuButton isActive={page.url.pathname === `/artist/${artist.id}`}>
+                            {#snippet child({ props })}
+                                <a href={`/artist/${artist.id}`} {...props}>
+                                    <img
+                                        src={artist.imageUrl || '/placeholder.jpg'}
+                                        class="size-6 rounded-full object-cover shadow-sm"
+                                        alt=""
+                                    />
+                                    <span class="truncate">{artist.name}</span>
+                                </a>
+                            {/snippet}
+                        </Sidebar.MenuButton>
+                    </Sidebar.MenuItem>
+                {/each}
+            </Sidebar.Menu>
+        </Sidebar.Group>
     </Sidebar.Content>
 
     <Sidebar.Rail />
+
+    <Sidebar.Footer class="md:hidden">
+        <NavUser variant="sidebar" />
+    </Sidebar.Footer>
 </Sidebar.Root>
