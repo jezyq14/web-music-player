@@ -1,4 +1,5 @@
-// apps/web/src/lib/player.svelte.ts
+import { untrack } from "svelte";
+
 export interface Track {
     id: string | null;
     title: string | null;
@@ -8,6 +9,13 @@ export interface Track {
     albumId: string | null;
     coverUrl: string | null;
     duration: number;
+    number: number | null;
+    discNumber: number | null;
+}
+
+export interface PlaybackContext {
+    type: 'album' | 'artist' | 'playlist';
+    id: string;
 }
 
 export type RepeatMode = 'none' | 'all' | 'one';
@@ -22,8 +30,12 @@ class PlayerStore {
     duration = $state(0);
     lastSeekTime = $state<number | null>(null);
 
+    playbackContext = $state<PlaybackContext | null>(null);
+
     volume = $state(0.5);
     private preMuteVolume = $state(0.5);
+
+    recentlyPlayed = $state<Track[]>([]);
 
     // Queue
     queue = $state<Track[]>([]);
@@ -49,12 +61,24 @@ class PlayerStore {
                     this.isShuffled = data.isShuffled;
                     this.lastSeekTime = data.currentTime;
                     this.queueSnapshot = data.queueSnapshot;
+                    this.playbackContext = data.playbackContext || null;
+                    this.recentlyPlayed = data.recentlyPlayed || [];
                 } catch (e) {
                     console.error("Failed to load player state", e);
                 }
             }
 
             $effect.root(() => {
+                $effect(() => {
+                    const current = this.currentTrack;
+                    if (current) {
+                        untrack(() => {
+                            const filtered = this.recentlyPlayed.filter(t => t.id !== current.id);
+                            this.recentlyPlayed = [current, ...filtered].slice(0, 8);
+                        });
+                    }
+                });
+
                 $effect(() => {
                     const stateToSave = {
                         currentTrack: this.currentTrack,
@@ -64,7 +88,9 @@ class PlayerStore {
                         currentTime: this.currentTime,
                         isRepeat: this.isRepeat,
                         isShuffled: this.isShuffled,
-                        queueSnapshot: this.queueSnapshot
+                        queueSnapshot: this.queueSnapshot,
+                        playbackContext: this.playbackContext,
+                        recentlyPlayed: this.recentlyPlayed
                     };
                     localStorage.setItem('player_state', JSON.stringify(stateToSave));
                 });
@@ -89,6 +115,14 @@ class PlayerStore {
         this.currentTrack = track;
         this.currentTime = 0;
         this.isPlaying = true;
+    }
+
+    playContext(tracks: Track[], startIndex = 0, context: PlaybackContext) {
+        this.isShuffled = false;
+        this.isRepeat = 'none';
+        this.queueSnapshot = [];
+        this.playbackContext = context;
+        this.setQueue(tracks, startIndex);
     }
 
     togglePlay() {
