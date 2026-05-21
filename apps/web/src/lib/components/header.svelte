@@ -9,6 +9,7 @@
     import { page } from '$app/state';
     import { goto } from '$app/navigation';
     import { IsMobile } from '$lib/hooks/is-mobile.svelte';
+    import NavUser from './nav-user.svelte';
 
     const isMobile = new IsMobile().current;
 
@@ -80,7 +81,12 @@
                     }}><Search size={20} /></Button
                 >
             {/if}
+
             <ThemeToggler />
+
+            <div class="hidden md:block">
+                <NavUser variant="header" />
+            </div>
         </div>
     {/if}
 </header>
