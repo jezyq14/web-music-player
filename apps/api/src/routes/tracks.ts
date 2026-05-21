@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
-import { albums, artists, db, tracks, playHistory } from '@repo/shared';
-import { eq, ilike, or, sql } from 'drizzle-orm';
+import { albums, db, tracks, playHistory } from '@repo/shared';
+import { eq, sql } from 'drizzle-orm';
 import { stream } from 'hono/streaming';
 import { statSync, createReadStream, existsSync, readFileSync } from 'fs';
 import path from 'path';
