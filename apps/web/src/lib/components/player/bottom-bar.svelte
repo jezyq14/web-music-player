@@ -14,6 +14,7 @@
     import Repeat from '@lucide/svelte/icons/repeat';
     import Repeat1 from '@lucide/svelte/icons/repeat-1';
     import { goto } from '$app/navigation';
+    import LikeButton from '../like-button.svelte';
 
     let albumUrl = $derived(
         player.currentTrack?.albumId ? `/album/${player.currentTrack.albumId}` : '#',
@@ -87,6 +88,11 @@
                     </div>
                 </a>
             </div>
+            <LikeButton
+                type="track"
+                id={player.currentTrack.id!}
+                data={{ name: player.currentTrack.title, imageUrl: player.currentTrack.coverUrl }}
+            />
         {/if}
     </div>
 
